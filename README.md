@@ -64,3 +64,23 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## Install
+clone 
+https://github.com/kukuh88/Laravel8-Notifikasi.git
+
+composer install
+
+jalankan npm run dev
+jalankan php artisan serve
+
+jika ingin melakukan login bisa melakukan seperti di bawah ini 
+
+http://127.0.0.1:8000/register
+
+jika sudah selesai maka 
+
+http://127.0.0.1:8000
+
+isi dengan yang sudah di register tersebut
