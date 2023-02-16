@@ -1,11 +1,11 @@
 @extends('layouts.master')
+
 @section('content')
     @if (session('sukses'))
         <div class="alert alert-success" role="alert">
             {{ session('sukses') }}
         </div>
     @endif
-    <main id="main" class="main">
         <div class="pagetitle">
             <h1>Edit Book Data</h1>
         </div>
@@ -69,7 +69,7 @@
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <a href="/book" class="btn btn-secondary" data-dismiss="modal">Close</a>&nbsp;&nbsp;&nbsp;
+                        <a href="{{route('book.index')}}" class="btn btn-secondary" data-dismiss="modal">Close</a>&nbsp;&nbsp;&nbsp;
                         <button type="submit" class="btn btn-warning">Update</button>
                         </form>
 
@@ -77,5 +77,4 @@
                 </div>
             </div>
         </section>
-    </main>
 @endsection

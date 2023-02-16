@@ -3,19 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Notifications\BookNotification;
-use Illuminate\Support\Facades\Notification;
 
 class BookController extends Controller
 {
-    public function index(){
-    	$book = Book::all();
-    	return view('book.index',compact(['book']));
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $book = Book::all();
+
+        return view('book.index', compact(['book']));
     }
 
-    public function create(Request $request){
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
         $validatedData = $request->validate([
             'nik' => 'required|max:255|unique:book',
             'name' => 'required|max:255',
@@ -26,37 +48,69 @@ class BookController extends Controller
             'tmt_eselon' => 'required|max:255'
         ]);
 
-    	$book = Book::create($validatedData);    
-        $user = User::where('name')->get();
-        Notification::send($user, new BookNotification($book));
-    	return redirect('/book')->with('success','Data has been saved successfully!');
+        $book = Book::create($validatedData);
+
+        return redirect()->route('book.index')->with('success', 'Data has been saved successfully!');
     }
 
-    public function edit($id){
-    	$book = Book::find($id);
-  
-    	return view('book.edit',compact(['book']));
-    }
-    public function store(Request $request){
-
-        $book = Book::all();
-        $book = new Book;
-        $book->name = $request->name;
-        $book->save();
-        Notification::send($book, new BookNotification($request->name));
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Book $book)
+    {
+        //
     }
 
-    public function update(Request $request,$id){
-    	$book = Book::find($id);
-    	$book->update($request->all());
-    	toastr()->success('Data has been updated successfully!');
-    	return redirect('/book')->with('success','Data has been updated successfully!');
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Book $book)
+    {
+        return view('book.edit', compact(['book']));
     }
 
-    public function delete($id){
-    	$book = Book::find($id);
-    	$book->delete();
-    	return redirect('/book')->with('success','Data has been deleted successfully!');
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Book $book)
+    {
+        $book->update($request->all());
+        toastr()->success('Data has been updated successfully!');
+
+        return redirect()->route('book.index')->with('success','Data has been updated successfully!');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Book $book)
+    {
+        $book->delete();
+
+        return redirect()->route('book.index')->with('success','Data has been deleted successfully!');
+    }
+
+    public function notif()
+    {
+        $now = Carbon::today();
+        $books = Book::select()
+            ->where('tmt_golongan', $now)
+            ->orWhere('tmt_eselon', $now)
+            ->get();
+
+        return response()->json(['data' => $books]);
+    }
 }

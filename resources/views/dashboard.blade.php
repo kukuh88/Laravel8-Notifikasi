@@ -1,8 +1,6 @@
 @extends('layouts.master')
-@section('content')
-@endsection
-<main id="main" class="main">
 
+@section('content')
     <div class="pagetitle">
         <h1>Dashboard</h1>
         <nav>
@@ -12,7 +10,6 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
-
     <section class="section dashboard">
         <div class="row">
             <div class="col-lg-12">
@@ -31,10 +28,9 @@
                 </div><!-- End Sales Card -->
             </div>
         </div>
-        </div>
     </section>
+@endsection
 
-</main><!-- End #main -->
 @section('sweetalert')
     <script>
         swal("Welcome Insan PT DOK DAN PERKAPALAN AIR KANTUNG");
