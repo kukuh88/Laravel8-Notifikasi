@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\HeaderController;
@@ -20,8 +21,15 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()->guest()) {
+        return redirect()->route('login');
+    }
+
+    return redirect()->route('dashboard');
 });
+
+require __DIR__.'/auth.php';
+
 Route::get('/auth', function () {
     return view('/auth/login');
 });
@@ -30,28 +38,31 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
-
-
-Route::middleware('auth')->group(function () {
-    Route::get('/book',[BookController::class,'index']);
-    Route::post('/book/create',[BookController::class,'create']);
-    Route::get('/book/edit/{id}',[BookController::class,'edit']);
-    Route::post('/book/update/{id}',[BookController::class,'update']);
-    Route::get('/book/delete/{id}',[BookController::class,'delete']);
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/book/notification', [BookController::class, 'notif'])->name('book.notif');
+    Route::resource('book', BookController::class);
 });
 
-require __DIR__.'/auth.php';
 
-// Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
-Route::get('book/{id}/payslip', [BookController::class, 'index'])->name('book.index');
 
-// routes/web.php
-Route::get('/notifications/data', function () {
-    $notifications = Auth::user()->notifications()->latest()->get();
+// Route::middleware('auth')->group(function () {
+//     Route::get('/book',[BookController::class,'index']);
+//     Route::post('/book/create',[BookController::class,'create']);
+//     Route::get('/book/edit/{id}',[BookController::class,'edit']);
+//     Route::post('/book/update/{id}',[BookController::class,'update']);
+//     Route::get('/book/delete/{id}',[BookController::class,'delete']);
+//     Route::get('/notifications/data', function () {
+//         $notifications = Auth::user()->notifications()->latest()->get();
+    
+//         return response()->json($notifications);
+//     });
+// });
 
-    return response()->json($notifications);
-});
+// // Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
-Route::get('/header', [HeaderController::class, 'index'])->name('header');
+// Route::get('book/{id}/payslip', [BookController::class, 'index'])->name('book.index');
+
+// // routes/web.php
+
+// Route::get('/header', [HeaderController::class, 'index'])->name('header');

@@ -1,81 +1,79 @@
 @extends('layouts.master')
+
 @section('content')
-    <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>Employee</h1>
-        </div>
-        <section class="section">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <h5 class="card-title">Data Employee</h5>
-                                    @if (Session::has('sukses'))
-                                        <div class="alert alert-success" role="alert">
-                                            {{ Session::get('sukses') }}
-                                    @endif
-                                </div>
-                                <div class="col-6">
-                                    <div class="right float-end">
-                                        <button type="button" class="btn btn-primary" style="margin-top: 12px;"
-                                            data-bs-toggle="modal" data-bs-target="#basicModal">
-                                            Add Employee
-                                        </button>
-                                    </div>
-                                    <!-- Basic Modal -->
-                                </div>
+    <div class="pagetitle">
+        <h1>Employee</h1>
+    </div>
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h5 class="card-title">Data Employee</h5>
+                                @if (Session::has('sukses'))
+                                    <div class="alert alert-success" role="alert">
+                                        {{ Session::get('sukses') }}
+                                @endif
                             </div>
-                            <!-- Table with hoverable rows -->
-                            <table class="table table-hover" id="datatable">
-                                <thead>
-                                    <tr>
-                                        <th>NO</th>
-                                        <th>NIK</th>
-                                        <th>FULL NAME</th>
-                                        <th>JABATAN</th>
-                                        <th>GOLONGAN</th>
-                                        <th>TMT GOLONGAN</th>
-                                        <th>ESELON</th>
-                                        <th>TMT ESLON</th>
-                                        <th>ACTION</th>
-                                    </tr>
-                                </thead>
-                                @php
-                                    $no = 1;
-                                @endphp
-                                <tbody>
-                                    @foreach ($book as $b)
-                                        <tr>
-                                            <td>{{ $no++ }}</td>
-                                            <td>{{ $b->nik }}</td>
-                                            <td>{{ $b->name }}</td>
-                                            <td>{{ $b->jabatan }}</td>
-                                            <td>{{ $b->golongan }}</td>
-                                            <td>{{ $b->tmt_golongan }}</td>
-                                            <td>{{ $b->eselon }}</td>
-                                            <td>{{ $b->tmt_eselon }}</td>
-                                            <td>
-                                                <a href="/book/edit/{{ $b->id }}" class="btn btn-warning">Edit</a>
-
-                                                <a href="#" class="btn btn-danger delete"
-                                                    book-id="{{ $b->id }}"
-                                                    book_name="{{ $b->name }}">Delete</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-                            <!-- End Table with hoverable rows -->
+                            <div class="col-6">
+                                <div class="right float-end">
+                                    <button type="button" class="btn btn-primary" style="margin-top: 12px;"
+                                        data-bs-toggle="modal" data-bs-target="#basicModal">
+                                        Add Employee
+                                    </button>
+                                </div>
+                                <!-- Basic Modal -->
+                            </div>
                         </div>
+                        <!-- Table with hoverable rows -->
+                        <table class="table table-hover" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>NIK</th>
+                                    <th>FULL NAME</th>
+                                    <th>JABATAN</th>
+                                    <th>GOLONGAN</th>
+                                    <th>TMT GOLONGAN</th>
+                                    <th>ESELON</th>
+                                    <th>TMT ESLON</th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($book as $no => $b)
+                                    <tr>
+                                        <td>{{ $no+1 }}</td>
+                                        <td>{{ $b->nik }}</td>
+                                        <td>{{ $b->name }}</td>
+                                        <td>{{ $b->jabatan }}</td>
+                                        <td>{{ $b->golongan }}</td>
+                                        <td>{{ $b->tmt_golongan }}</td>
+                                        <td>{{ $b->eselon }}</td>
+                                        <td>{{ $b->tmt_eselon }}</td>
+                                        <td>
+                                            <a href="{{ route('book.edit', $b) }}" class="btn btn-warning">Edit</a>
+
+                                            <a href="#" class="btn btn-danger btn-action delete"
+                                                data-url="{{ route('book.destroy', $b) }}"
+                                                data-text="{{ $b->name }}">Delete</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                        <!-- End Table with hoverable rows -->
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+@endsection
 
+@section('modal')
     <!-- Modal -->
     <div class="modal fade" id="basicModal" tabindex="-1">
         <div class="modal-dialog">
@@ -87,8 +85,8 @@
                 <div class="modal-body">
                     <div class="card-body">
                         <!-- General Form Elements -->
-                        <form action="/book/create" method="POST">
-                            {{ csrf_field() }}
+                        <form action="{{route('book.store')}}" method="POST">
+                            @csrf
                             <div class="row mb-3{{ $errors->has('nik') ? ' has-error' : '' }}">
                                 <label for="inputText" class="col-sm-2 col-form-label">NIK</label>
                                 <div class="col-sm-10">
@@ -173,6 +171,7 @@
         </div>
     </div>
 @endsection
+
 @section('sweetalert')
     <script>
         $(document).ready(function() {
